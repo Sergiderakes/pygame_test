@@ -3,22 +3,21 @@ import cuadrado_class as cu
 
 width, height = 640, 480
 
-def compruebaTeclasMover(keys, c, colision):
-    if not colision:
+def compruebaTeclasMover(keys, c):
         if keys[pygame.K_RIGHT]:
-            c.vel_x = 1
-        # elif keys[pygame.K_d]:
+            c.set_vel_x(1)
+        elif keys[pygame.K_d]:
+            c.set_vel_x(1)
             
+        if keys[pygame.K_LEFT]:
+            c.set_vel_x(-1)
+        elif keys[pygame.K_a]:
+            c.set_vel_x(-1)
             
-        # if keys[pygame.K_LEFT]:
-           
-        # elif keys[pygame.K_a]:
-            
-            
-        # if keys[pygame.K_UP]:
-            
-        # elif keys[pygame.K_w]:
-            
+        if keys[pygame.K_UP]:
+            c.jump()
+        elif keys[pygame.K_w]:
+            c.jump()
 
         # if keys[pygame.K_DOWN]:
             
@@ -39,7 +38,7 @@ def comprobar_colision(c, c1):
     else:
         return False
 
-cuad = pygame.image.load("Prueba\\imgs\\cuad.png")
+cuad = pygame.image.load("imgs\\cuad.png")
 cuad = pygame.transform.scale(cuad, (20, 20))
 
 pygame.init()
@@ -58,17 +57,22 @@ while True:
     keys = pygame.key.get_pressed()
     for a in cds_moveables:
         a.move_x()
-        a.set_pos(a.x, a.y+0.15)
+        a.move_y()
+        # print(a.vel_y)
         screen.blit(cuad, (a.x, a.y))
         for nm in cds_not_moveables:
             screen.blit(cuad, (nm.x, nm.y))
             collision = comprobar_colision(a, nm)
             while collision:
                 a.coll = True
+                if abs(a.vel_y) > 0.2:
+                    a.set_vel_y(-a.vel_y*0.92)
+                else:
+                    a.gravedad = False
                 a.set_pos(a.x, a.y-0.15)
                 collision = comprobar_colision(a, nm)
             a.coll = False
-        compruebaTeclasMover(keys, a, False)
+        compruebaTeclasMover(keys, a)
     pygame.display.flip() ##Actualiza la pantalla
     
 
