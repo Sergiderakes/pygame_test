@@ -8,7 +8,7 @@ class cuadrado:
     width = 0
     height = 0
     vel = 0.3 # 0.3
-    is_colliding = False
+    coll = False
     
     def __init__(self,x ,y, width, height, vel):
         self.x = x
@@ -39,34 +39,16 @@ class cuadrado:
             self.y = self.y - 40
 
     def move(self, boolean):
-        if self.is_colliding:
-            if self.x >= -50 and self.x <= self.width:
-                if boolean:
-                    self.pos1(self.x-self.vel, self.y)
-                else:
-                    self.pos1(self.x+self.vel, self.y)
+        if self.x >= -50 and self.x <= self.width:
+            if boolean:
+                self.pos(self.x-self.vel, self.y)
             else:
-                self.x = self.width-10 if self.x <= -50 else -40
+                self.pos(self.x+self.vel, self.y)
         else:
-            if self.x >= -50 and self.x <= self.width:
-                if boolean:
-                    self.pos(self.x-self.vel, self.y)
-                else:
-                    self.pos(self.x+self.vel, self.y)
-            else:
-                self.x = self.width-10 if self.x <= -50 else -40
+            self.x = self.width-10 if self.x <= -50 else -40
     
     def vertical_move(self, boolean):
-        if self.is_colliding:
-            if self.y >= -50 and self.y <= self.height:
-                if boolean:
-                    self.pos1(self.x, self.y-self.vel)
-
-                else:
-                    self.pos1(self.x, self.y+self.vel)
-            else:
-                self.y = self.height-10 if self.y <= -50 else -40
-        else:
+        if not self.coll:
             if self.y >= -50 and self.y <= self.height:
                 if boolean:
                     self.pos(self.x, self.y-self.vel)
