@@ -6,24 +6,24 @@ width, height = 640, 480
 def compruebaTeclasMover(keys, c, colision):
     if not colision:
         if keys[pygame.K_RIGHT]:
-            c.move(False)
-        elif keys[pygame.K_d]:
-            c.move(False)
+            c.vel_x = 1
+        # elif keys[pygame.K_d]:
             
-        if keys[pygame.K_LEFT]:
-            c.move(True)
-        elif keys[pygame.K_a]:
-            c.move(True)
             
-        if keys[pygame.K_UP]:
-            c.vertical_move(True)
-        elif keys[pygame.K_w]:
-            c.vertical_move(True)
+        # if keys[pygame.K_LEFT]:
+           
+        # elif keys[pygame.K_a]:
+            
+            
+        # if keys[pygame.K_UP]:
+            
+        # elif keys[pygame.K_w]:
+            
 
-        if keys[pygame.K_DOWN]:
-            c.vertical_move(False)
-        elif keys[pygame.K_s]:
-            c.vertical_move(False)
+        # if keys[pygame.K_DOWN]:
+            
+        # elif keys[pygame.K_s]:
+            
 
         if keys[pygame.K_SPACE]:
             print("", end = "")
@@ -44,7 +44,7 @@ cuad = pygame.transform.scale(cuad, (20, 20))
 
 pygame.init()
 screen = pygame.display.set_mode((width, height))
-c = cu.cuadrado(0, 0, width, height, 0.3)
+c = cu.cuadrado(0, 0, width, height, 0.003)
 c1 = cu.cuadrado(320, 240, width, height, 0)
 c2 = cu.cuadrado(340, 240, width, height, 0)
 c3 = cu.cuadrado(360, 240, width, height, 0)
@@ -57,14 +57,15 @@ while True:
     screen.fill(0) ##Limpia la pantalla
     keys = pygame.key.get_pressed()
     for a in cds_moveables:
-        a.pos(a.x, a.y+a.vel/2)
+        a.move_x()
+        a.set_pos(a.x, a.y+0.15)
         screen.blit(cuad, (a.x, a.y))
         for nm in cds_not_moveables:
             screen.blit(cuad, (nm.x, nm.y))
             collision = comprobar_colision(a, nm)
             while collision:
                 a.coll = True
-                a.pos1(a.x, a.y-0.15)
+                a.set_pos(a.x, a.y-0.15)
                 collision = comprobar_colision(a, nm)
             a.coll = False
         compruebaTeclasMover(keys, a, False)
