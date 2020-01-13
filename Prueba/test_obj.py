@@ -127,9 +127,11 @@ while True:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
-            for coll in colliders_l:
-                if check_collision(pos, coll):
+            clicking = False
+            for coll in colliders_l[::-1]:
+                if check_collision(pos, coll) and not clicking:
                     coll.clicked = True
+                    clicking = True
                     mouse_x = pos[0]
                     mouse_y = pos[1]
                     coll.offset_x = coll.x - mouse_x

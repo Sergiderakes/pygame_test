@@ -44,3 +44,13 @@ class colliders:
     def draw(self):
         if self.show:
             self.screen.blit(self.img, (self.x, self.y))
+            if self.clicked:
+                sup = pygame.Surface((self.width, 2))
+                sup.fill((255, 255, 255))
+                lef = pygame.Surface((2, self.height))
+                lef.fill((255, 255, 255))
+
+                self.screen.blit(sup, (self.x, self.y))
+                self.screen.blit(sup, (self.x, self.y + self.height)) # inf
+                self.screen.blit(lef, (self.x, self.y))
+                self.screen.blit(lef, (self.x + self.width, self.y)) # rig
