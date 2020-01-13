@@ -109,20 +109,21 @@ while True:
             if coll.show:
                 coll.draw()
             collision = check_collision(a, coll)
-            if collision:
-                while collision:
-                    collision = check_collision(a, coll)
-                    collision_handler(a, coll, collision)
+            while collision:
+                collision = check_collision(a, coll)
+                collision_handler(a, coll, collision)
         compruebaTeclasMover(keys, a)
     pygame.display.flip() ##Actualiza la pantalla
 
     for event in pygame.event.get():
-        if event.type==pygame.QUIT:
+        if event.type == pygame.QUIT:
             pygame.quit()
 
         if event.type == pygame.MOUSEBUTTONUP:
-            for coll in colliders_l:
-                coll.clicked = False
+            left, _, _ = pygame.mouse.get_pressed()
+            if not left:
+                for coll in colliders_l:
+                    coll.clicked = False
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
@@ -135,8 +136,9 @@ while True:
                     coll.offset_y = coll.y - mouse_y
 
         if event.type == pygame.MOUSEMOTION:
-            for coll in colliders_l:
-                if left and coll.clicked:
-                    pos = pygame.mouse.get_pos()
-                    coll.move(pos[0], pos[1])
+            if left:
+                for coll in colliders_l:
+                    if coll.clicked:
+                        pos = pygame.mouse.get_pos()
+                        coll.move(pos[0], pos[1])
             
