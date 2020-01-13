@@ -59,25 +59,36 @@ def collision_handler(o, col, is_colliding):
 
 def check_collision(o, col):
     if isinstance(col, cc.colliders) and not isinstance(o, cc.colliders):
-        if o.x <= col.x + col.width and o.x + 20 >= col.x and o.y <= col.y + col.height and o.y + 20 >= col.y:
-            return True
+        if isinstance(o, (tuple)): # Mouse collision
+            if o[0] <= col.x + col.width and o[0]>= col.x and o[1] <= col.y + col.height and o[1] >= col.y:
+                return True
+            else:
+                return False
         else:
-            return False
+            if o.x <= col.x + col.width and o.x + 20 >= col.x and o.y <= col.y + col.height and o.y + 20 >= col.y:
+                return True
+            else:
+                return False
 
 sqr = pygame.image.load("imgs\\sqr.png")
 sqr = pygame.transform.scale(sqr, (20, 20))
 
 pygame.init()
 screen = pygame.display.set_mode((width, height))
-c = cu.cuadrado(0, 0, width, height, 0.003)
+c = cu.cuadrado(410, 0, width, height, 0.003)
 coll1 = cc.colliders(True, 0, 400, 20, 800, screen)
 coll2 = cc.colliders(False, 400, 0, 800, 20, screen)
+coll3 = cc.colliders(True, 0, 200, 20, 800, screen)
 cds_moveables = [c]
-colliders_l = [coll1, coll2]
+colliders_l = [coll1, coll2, coll3]
+mouse_x = 0
+mouse_y = 0
+mov = False
 
 while True:
     screen.fill(0) ##Limpia la pantalla
     keys = pygame.key.get_pressed()
+    left, center, right = pygame.mouse.get_pressed()
     for a in cds_moveables:
         a.move_x()
         a.move_y()
@@ -92,11 +103,28 @@ while True:
                     collision_handler(a, coll, collision)
         compruebaTeclasMover(keys, a)
     pygame.display.flip() ##Actualiza la pantalla
-    
 
-    
-    
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             pygame.quit()
+
+        if event.type == pygame.MOUSEBUTTONUP:
+            for coll in colliders_l:
+                coll.clicked = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            for coll in colliders_l:
+                if check_collision(pos, coll):
+                    coll.clicked = True
+                    mouse_x = pos[0]
+                    mouse_y = pos[1]
+                    coll.offset_x = coll.x - mouse_x
+                    coll.offset_y = coll.y - mouse_y
+
+        if event.type == pygame.MOUSEMOTION:
+            for coll in colliders_l:
+                if left and coll.clicked:
+                    pos = pygame.mouse.get_pos()
+                    coll.move(pos[0], pos[1])
             
