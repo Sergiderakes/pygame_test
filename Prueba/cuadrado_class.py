@@ -7,10 +7,10 @@ class cuadrado:
     height = 0
     vel_x = 0
     vel_y = 0
-    coll = False
+    # coll = False
     gravedad = True
     vel = 0
-    tick_count = 0
+    # tick_count = 0
     
     def __init__(self,x ,y, width, height, vel):
         self.x = x
