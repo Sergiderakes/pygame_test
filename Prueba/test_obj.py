@@ -1,4 +1,5 @@
 import pygame
+import os
 import cuadrado_class as cu
 import colliders_class as cc
 
@@ -33,7 +34,7 @@ def collision_handler(o, col, is_colliding):
     # o.coll = True
     if col.is_horizontal:
         if is_colliding:
-            if o.vel_y <= 0:
+            if o.vel_y < 0:
                 a.set_pos(a.x, a.y + 0.15)
             else:
                 a.set_pos(a.x, a.y - 0.15)
@@ -70,17 +71,26 @@ def check_collision(o, col):
             else:
                 return False
 
-sqr = pygame.image.load("imgs\\sqr.png")
+def draw_sqr_black(screen, c):
+    screen.blit(sqr_blk, (c.x, c.y))
+
+sqr = pygame.image.load(os.path.join(os.path.dirname(__file__), "imgs", "sqr.png"))
+# sqr_blk = pygame.image.load(os.path.join(os.path.dirname(__file__), "imgs", "black_sqr.png"))
 sqr = pygame.transform.scale(sqr, (20, 20))
+# sqr_blk = pygame.transform.scale(sqr_blk, (20, 20))
 
 pygame.init()
 screen = pygame.display.set_mode((width, height))
-c = cu.cuadrado(410, 0, width, height, 0.003)
+c = cu.cuadrado(400, 300, width, height, 0.003)
 coll1 = cc.colliders(True, 0, 400, 20, 800, screen)
 coll2 = cc.colliders(False, 400, 0, 800, 20, screen)
 coll3 = cc.colliders(True, 0, 200, 20, 800, screen)
+coll4 = cc.colliders(False, 200, 0, 800, 20, screen)
 cds_moveables = [c]
-colliders_l = [coll1, coll2, coll3]
+colliders_l = [coll1, coll2, coll3, coll4]
+for coll in colliders_l:
+    # coll.show = False
+    coll.draw()
 mouse_x = 0
 mouse_y = 0
 mov = False
@@ -90,12 +100,14 @@ while True:
     keys = pygame.key.get_pressed()
     left, center, right = pygame.mouse.get_pressed()
     for a in cds_moveables:
+        # draw_sqr_black(screen, a)
         a.move_x()
         a.move_y()
         # print(a.vel_y)
         screen.blit(sqr, (a.x, a.y))
         for coll in colliders_l:
-            coll.draw()
+            if coll.show:
+                coll.draw()
             collision = check_collision(a, coll)
             if collision:
                 while collision:

@@ -65,6 +65,7 @@ class cuadrado:
         self.set_vel_y(-0.5)
         self.gravedad = True
 
+
     # def move(self, boolean):
     #     # if self.x >= -50 and self.x <= self.width:
     #     if not self.x in [-50, self.width]:

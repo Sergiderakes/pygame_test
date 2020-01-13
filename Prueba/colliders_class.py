@@ -1,4 +1,5 @@
 import pygame
+import os
 
 class colliders:
     is_horizontal = True
@@ -6,8 +7,8 @@ class colliders:
     y = 0
     height = 0
     width = 0
-    HOR_IMG_URL = "imgs\\horizontal_coll.png"
-    VER_IMG_URL = "imgs\\vertical_coll.png"
+    # HOR_IMG_URL = os.path.join(os.path.dirname(__file__), "imgs", "horizontal_coll.png")
+    # VER_IMG_URL = os.path.join(os.path.dirname(__file__), "imgs", "vertical_coll.png")
     show = True
     img = None
     screen = None
@@ -22,8 +23,8 @@ class colliders:
         self.y = y
         self.height = height
         self.width = width
-        self.img = pygame.image.load(self.HOR_IMG_URL) if self.is_horizontal else pygame.image.load(self.VER_IMG_URL)
-        self.img = pygame.transform.scale(self.img, (self.width, self.height))
+        self.img = pygame.Surface((width, height))
+        self.img.fill((255, 0, 0)) if self.is_horizontal else self.img.fill((0, 0, 255))
         self.screen = screen
     
     def move(self, mouse_x, mouse_y):
@@ -35,8 +36,7 @@ class colliders:
     
     def horizontal(self, is_horizontal):
         self.is_horizontal = is_horizontal
-        self.img = pygame.image.load(self.HOR_IMG_URL) if self.is_horizontal else pygame.image.load(self.VER_IMG_URL)
-        self.img = pygame.transform.scale(self.img, (self.width, self.height))
+        self.img.fill((255, 0, 0)) if self.is_horizontal else self.img.fill((0, 0, 255))
 
     def set_show(self, is_shown):
         self.show = is_shown
