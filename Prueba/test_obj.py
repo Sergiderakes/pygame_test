@@ -30,6 +30,13 @@ def compruebaTeclasMover(keys, c):
             print("", end = "")
             # c.jump()
 
+def check_collision1(coll, coll1):
+    if isinstance(coll, cc.colliders) and isinstance(coll1, cc.colliders):
+        if coll.x <= coll1.x + coll1.width and coll.x + coll.width >= coll1.x and coll.y <= coll1.y + coll1.height and coll.y + coll.height >= coll1.y:
+            return True
+        else:
+            return False
+
 def collision_handler(o, col, is_colliding):
     # o.coll = True
     if col.is_horizontal:
@@ -39,7 +46,7 @@ def collision_handler(o, col, is_colliding):
             else:
                 a.set_pos(a.x, a.y - 0.15)
         else:
-            print("Collision detected on (", int(o.x), ", ", int(o.y), ") with horizontal", sep = "")
+            # print("Collision detected on (", int(o.x), ", ", int(o.y), ") with horizontal", sep = "")
             if abs(o.vel_y) > 0.2:
                 o.set_vel_y(-o.vel_y * 0.6)
             else:
@@ -51,22 +58,17 @@ def collision_handler(o, col, is_colliding):
             else:
                 a.set_pos(a.x + 0.15, a.y)
         else:
-            print("Collision detected on (", int(o.x), ", ", int(o.y), ") with vertical", sep = "")
+            # print("Collision detected on (", int(o.x), ", ", int(o.y), ") with vertical", sep = "")
             if abs(o.vel_x) > 0.2:
                 o.vel_x = -o.vel_x * 0.6
             else:
                 o.vel_x = 0
         
 
-def check_collision(o, col):
-    if isinstance(col, cc.colliders) and not isinstance(o, cc.colliders):
-        if isinstance(o, (tuple)): # Mouse collision
-            if o[0] <= col.x + col.width and o[0]>= col.x and o[1] <= col.y + col.height and o[1] >= col.y:
-                return True
-            else:
-                return False
-        else:
-            if o.x <= col.x + col.width and o.x + 20 >= col.x and o.y <= col.y + col.height and o.y + 20 >= col.y:
+def check_collision(mouse, col):
+    if isinstance(col, cc.colliders) and not isinstance(mouse, cc.colliders):
+        if isinstance(mouse, (tuple)): # Mouse collision
+            if mouse[0] <= col.x + col.width and mouse[0]>= col.x and mouse[1] <= col.y + col.height and mouse[1] >= col.y:
                 return True
             else:
                 return False
@@ -81,13 +83,16 @@ sqr = pygame.transform.scale(sqr, (20, 20))
 
 pygame.init()
 screen = pygame.display.set_mode((width, height))
-c = cu.cuadrado(400, 300, width, height, 0.003)
+c = cu.cuadrado(400, 300, width, height, 0.003, screen)
 coll1 = cc.colliders(True, 0, 400, 20, 800, screen)
 coll2 = cc.colliders(False, 400, 0, 800, 20, screen)
 coll3 = cc.colliders(True, 0, 200, 20, 800, screen)
 coll4 = cc.colliders(False, 200, 0, 800, 20, screen)
+c.show_colliders(False)
 cds_moveables = [c]
 colliders_l = [coll1, coll2, coll3, coll4]
+# bar = cb.coll_bar(20, 270, c, screen)
+# bar.set_show(True)
 for coll in colliders_l:
     # coll.show = False
     coll.draw()
@@ -95,24 +100,29 @@ mouse_x = 0
 mouse_y = 0
 mov = False
 
+
 while True:
     screen.fill(0) ##Limpia la pantalla
     keys = pygame.key.get_pressed()
     left, center, right = pygame.mouse.get_pressed()
+    
     for a in cds_moveables:
         # draw_sqr_black(screen, a)
         a.move_x()
         a.move_y()
         # print(a.vel_y)
-        screen.blit(sqr, (a.x, a.y))
         for coll in colliders_l:
+            # collision_handler_2(a, coll, screen)
+            a.collision_handler(coll)
             if coll.show:
                 coll.draw()
-            collision = check_collision(a, coll)
-            while collision:
-                collision = check_collision(a, coll)
-                collision_handler(a, coll, collision)
+            # collision = check_collision(a, coll)
+            # while collision:
+            #     collision = check_collision(a, coll)
+            #     collision_handler(a, coll, collision)
         compruebaTeclasMover(keys, a)
+        a.draw()
+        # bar.draw()
     pygame.display.flip() ##Actualiza la pantalla
 
     for event in pygame.event.get():

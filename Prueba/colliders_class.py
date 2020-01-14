@@ -21,14 +21,19 @@ class colliders:
         self.is_horizontal = is_horizontal
         self.x = x
         self.y = y
-        self.height = height
-        self.width = width
-        self.img = pygame.Surface((width, height))
+        if is_horizontal:
+            self.width = width if width>height else height
+            self.height = width if width<=height else height
+        else:
+            self.width = width if width<=height else height
+            self.height = width if width>height else height
+        self.img = pygame.Surface((self.width, self.height))
         self.img.fill((255, 0, 0)) if self.is_horizontal else self.img.fill((0, 0, 255))
         self.screen = screen
     
     def move(self, mouse_x, mouse_y):
-        self.set_pos(self.offset_x + mouse_x, self.offset_y + mouse_y)
+        if self.show:
+            self.set_pos(self.offset_x + mouse_x, self.offset_y + mouse_y)
 
     def set_pos(self, x, y):
         self.x = x
@@ -37,6 +42,12 @@ class colliders:
     def horizontal(self, is_horizontal):
         self.is_horizontal = is_horizontal
         self.img.fill((255, 0, 0)) if self.is_horizontal else self.img.fill((0, 0, 255))
+        if is_horizontal:
+            self.height = 20
+            self.width = width if width>height else height
+        else:
+            self.width = 20
+            self.height = width if width>height else height
 
     def set_show(self, is_shown):
         self.show = is_shown
@@ -51,6 +62,6 @@ class colliders:
                 lef.fill((255, 255, 255))
 
                 self.screen.blit(sup, (self.x, self.y))
-                self.screen.blit(sup, (self.x, self.y + self.height)) # inf
+                self.screen.blit(sup, (self.x, self.y + self.height -2)) # inf
                 self.screen.blit(lef, (self.x, self.y))
-                self.screen.blit(lef, (self.x + self.width, self.y)) # rig
+                self.screen.blit(lef, (self.x + self.width -2, self.y)) # rig
