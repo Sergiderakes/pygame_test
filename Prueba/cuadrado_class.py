@@ -51,10 +51,10 @@ class cuadrado:
             self.y = y
         else:
             self.y = self.height-10 if self.y <= -50 else -40
-        self.right_coll.set_pos(self.x + 20 - 3, self.y)
+        self.right_coll.set_pos(self.x + 20 - 2, self.y)
         self.left_coll.set_pos(self.x, self.y)
         self.top_coll.set_pos(self.x, self.y)
-        self.bot_coll.set_pos(self.x, self.y + 20 - 3)
+        self.bot_coll.set_pos(self.x, self.y + 20 - 2)
 
     def draw(self):
         self.screen.blit(self.sqr, (self.x, self.y))

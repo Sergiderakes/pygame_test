@@ -9,7 +9,7 @@ class colliders:
     width = 0
     # HOR_IMG_URL = os.path.join(os.path.dirname(__file__), "imgs", "horizontal_coll.png")
     # VER_IMG_URL = os.path.join(os.path.dirname(__file__), "imgs", "vertical_coll.png")
-    show = True
+    show = False
     img = None
     screen = None
     offset_x = 0
@@ -65,3 +65,45 @@ class colliders:
                 self.screen.blit(sup, (self.x, self.y + self.height -2)) # inf
                 self.screen.blit(lef, (self.x, self.y))
                 self.screen.blit(lef, (self.x + self.width -2, self.y)) # rig
+    
+class circle_collider:
+    x = 0
+    y = 0
+    r = 0
+    width = 2
+    img = None
+    show = False
+    screen = None
+    offset_x = 0
+    offset_y = 0
+    clicked = False
+
+    def __init__(self, x, y, r, screen):
+        self.x = x
+        self.y = y
+        self.r = r
+        self.screen = screen
+        self.img = pygame.Surface((2 * self.r, 2 * self.r))
+        pygame.draw.circle(self.img, (0, 0, 255), (self.r, self.r), self.r, self.width)
+    
+    def set_pos(self, x, y):
+        self.x = x
+        self.y = y
+    
+    def move(self, mouse_x, mouse_y):
+        if self.show:
+            self.set_pos(self.offset_x + mouse_x, self.offset_y + mouse_y)
+        
+    def draw(self):
+        self.screen.blit(self.img, (self.x, self.y))
+    
+    def is_mouse_colliding(self, mouse_pos):
+        if isinstance(mouse_pos, tuple):
+            if (mouse_pos[0] - self.r <= self.x <= mouse_pos[0] + self.r) and (mouse_pos[1] - self.r <= self.y <= mouse_pos[1] + self.r):
+                return True
+                
+            else:
+                return False
+        else:
+            return False
+

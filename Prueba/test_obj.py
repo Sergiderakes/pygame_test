@@ -24,45 +24,33 @@ def compruebaTeclasMover(keys, c):
         # if keys[pygame.K_DOWN]:
             
         # elif keys[pygame.K_s]:
-            
 
-        if keys[pygame.K_SPACE]:
-            print("", end = "")
-            # c.jump()
-
-def check_collision1(coll, coll1):
-    if isinstance(coll, cc.colliders) and isinstance(coll1, cc.colliders):
-        if coll.x <= coll1.x + coll1.width and coll.x + coll.width >= coll1.x and coll.y <= coll1.y + coll1.height and coll.y + coll.height >= coll1.y:
-            return True
-        else:
-            return False
-
-def collision_handler(o, col, is_colliding):
-    # o.coll = True
-    if col.is_horizontal:
-        if is_colliding:
-            if o.vel_y < 0:
-                a.set_pos(a.x, a.y + 0.15)
-            else:
-                a.set_pos(a.x, a.y - 0.15)
-        else:
-            # print("Collision detected on (", int(o.x), ", ", int(o.y), ") with horizontal", sep = "")
-            if abs(o.vel_y) > 0.2:
-                o.set_vel_y(-o.vel_y * 0.6)
-            else:
-                o.gravedad = False
-    else:
-        if is_colliding:
-            if o.vel_x >= 0:
-                a.set_pos(a.x - 0.15, a.y)
-            else:
-                a.set_pos(a.x + 0.15, a.y)
-        else:
-            # print("Collision detected on (", int(o.x), ", ", int(o.y), ") with vertical", sep = "")
-            if abs(o.vel_x) > 0.2:
-                o.vel_x = -o.vel_x * 0.6
-            else:
-                o.vel_x = 0
+# def collision_handler(o, col, is_colliding):
+#     # o.coll = True
+#     if col.is_horizontal:
+#         if is_colliding:
+#             if o.vel_y < 0:
+#                 a.set_pos(a.x, a.y + 0.15)
+#             else:
+#                 a.set_pos(a.x, a.y - 0.15)
+#         else:
+#             # print("Collision detected on (", int(o.x), ", ", int(o.y), ") with horizontal", sep = "")
+#             if abs(o.vel_y) > 0.2:
+#                 o.set_vel_y(-o.vel_y * 0.6)
+#             else:
+#                 o.gravedad = False
+#     else:
+#         if is_colliding:
+#             if o.vel_x >= 0:
+#                 a.set_pos(a.x - 0.15, a.y)
+#             else:
+#                 a.set_pos(a.x + 0.15, a.y)
+#         else:
+#             # print("Collision detected on (", int(o.x), ", ", int(o.y), ") with vertical", sep = "")
+#             if abs(o.vel_x) > 0.2:
+#                 o.vel_x = -o.vel_x * 0.6
+#             else:
+#                 o.vel_x = 0
         
 
 def check_collision(mouse, col):
@@ -73,13 +61,8 @@ def check_collision(mouse, col):
             else:
                 return False
 
-def draw_sqr_black(screen, c):
-    screen.blit(sqr_blk, (c.x, c.y))
-
 sqr = pygame.image.load(os.path.join(os.path.dirname(__file__), "imgs", "sqr.png"))
-# sqr_blk = pygame.image.load(os.path.join(os.path.dirname(__file__), "imgs", "black_sqr.png"))
 sqr = pygame.transform.scale(sqr, (20, 20))
-# sqr_blk = pygame.transform.scale(sqr_blk, (20, 20))
 
 pygame.init()
 screen = pygame.display.set_mode((width, height))
@@ -88,17 +71,17 @@ coll1 = cc.colliders(True, 0, 400, 20, 800, screen)
 coll2 = cc.colliders(False, 400, 0, 800, 20, screen)
 coll3 = cc.colliders(True, 0, 200, 20, 800, screen)
 coll4 = cc.colliders(False, 200, 0, 800, 20, screen)
-c.show_colliders(False)
+# c.show_colliders(True)
+circle = cc.circle_collider(100, 100, 30, screen)
 cds_moveables = [c]
-colliders_l = [coll1, coll2, coll3, coll4]
-# bar = cb.coll_bar(20, 270, c, screen)
-# bar.set_show(True)
+colliders_l = [coll1, coll2, coll3, coll4, circle]
 for coll in colliders_l:
-    # coll.show = False
+    coll.show = True
     coll.draw()
 mouse_x = 0
 mouse_y = 0
 mov = False
+
 
 
 while True:
@@ -107,22 +90,25 @@ while True:
     left, center, right = pygame.mouse.get_pressed()
     
     for a in cds_moveables:
-        # draw_sqr_black(screen, a)
+        # s = pygame.Surface((120, 100))
+        # pygame.draw.circle(s, (0, 0, 255), (60, 60), 60, 2)
+        # screen.blit(s, (0, 150))
         a.move_x()
         a.move_y()
-        # print(a.vel_y)
         for coll in colliders_l:
-            # collision_handler_2(a, coll, screen)
-            a.collision_handler(coll)
-            if coll.show:
-                coll.draw()
+            if isinstance(coll, cc.circle_collider):
+                if coll.show:
+                    coll.draw()
+            else:
+                a.collision_handler(coll)
+                if coll.show:
+                    coll.draw()
             # collision = check_collision(a, coll)
             # while collision:
             #     collision = check_collision(a, coll)
             #     collision_handler(a, coll, collision)
         compruebaTeclasMover(keys, a)
         a.draw()
-        # bar.draw()
     pygame.display.flip() ##Actualiza la pantalla
 
     for event in pygame.event.get():
@@ -139,7 +125,15 @@ while True:
             pos = pygame.mouse.get_pos()
             clicking = False
             for coll in colliders_l[::-1]:
-                if check_collision(pos, coll) and not clicking:
+                if isinstance(coll, cc.circle_collider):
+                    if coll.is_mouse_colliding(pos):
+                        coll.clicked = True
+                        clicking = True
+                        mouse_x = pos[0]
+                        mouse_y = pos[1]
+                        coll.offset_x = coll.x - mouse_x
+                        coll.offset_y = coll.y - mouse_y
+                elif check_collision(pos, coll) and not clicking:
                     coll.clicked = True
                     clicking = True
                     mouse_x = pos[0]
@@ -153,4 +147,7 @@ while True:
                     if coll.clicked:
                         pos = pygame.mouse.get_pos()
                         coll.move(pos[0], pos[1])
+
+
+    
             
