@@ -53,13 +53,13 @@ def compruebaTeclasMover(keys, c):
 #                 o.vel_x = 0
         
 
-def check_collision(mouse, col):
-    if isinstance(col, cc.colliders) and not isinstance(mouse, cc.colliders):
-        if isinstance(mouse, (tuple)): # Mouse collision
-            if mouse[0] <= col.x + col.width and mouse[0]>= col.x and mouse[1] <= col.y + col.height and mouse[1] >= col.y:
-                return True
-            else:
-                return False
+# def check_collision(mouse, col):
+#     if isinstance(col, cc.colliders) and not isinstance(mouse, cc.colliders):
+#         if isinstance(mouse, (tuple)): # Mouse collision
+#             if mouse[0] <= col.x + col.width and mouse[0]>= col.x and mouse[1] <= col.y + col.height and mouse[1] >= col.y:
+#                 return True
+#             else:
+#                 return False
 
 sqr = pygame.image.load(os.path.join(os.path.dirname(__file__), "imgs", "sqr.png"))
 sqr = pygame.transform.scale(sqr, (20, 20))
@@ -125,15 +125,7 @@ while True:
             pos = pygame.mouse.get_pos()
             clicking = False
             for coll in colliders_l[::-1]:
-                if isinstance(coll, cc.circle_collider):
-                    if coll.is_mouse_colliding(pos):
-                        coll.clicked = True
-                        clicking = True
-                        mouse_x = pos[0]
-                        mouse_y = pos[1]
-                        coll.offset_x = coll.x - mouse_x
-                        coll.offset_y = coll.y - mouse_y
-                elif check_collision(pos, coll) and not clicking:
+                if coll.is_mouse_colliding(pos) and not clicking:
                     coll.clicked = True
                     clicking = True
                     mouse_x = pos[0]
