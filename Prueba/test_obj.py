@@ -2,6 +2,7 @@ import pygame
 import os
 import cuadrado_class as cu
 import colliders_class as cc
+import time
 
 width, height = 640, 480
 
@@ -75,6 +76,7 @@ coll4 = cc.colliders(False, 200, 0, 800, 20, screen)
 circle = cc.circle_collider(100, 100, 30, screen)
 cds_moveables = [c]
 colliders_l = [coll1, coll2, coll3, coll4, circle]
+drawble = cds_moveables + colliders_l
 for coll in colliders_l:
     coll.show = True
     coll.draw()
@@ -82,10 +84,12 @@ mouse_x = 0
 mouse_y = 0
 mov = False
 
-
+i = 0
+t = 0
+t1 = 0
 
 while True:
-    screen.fill(0) ##Limpia la pantalla
+    t_inicial = time.time()
     keys = pygame.key.get_pressed()
     left, center, right = pygame.mouse.get_pressed()
     
@@ -93,23 +97,19 @@ while True:
         # s = pygame.Surface((120, 100))
         # pygame.draw.circle(s, (0, 0, 255), (60, 60), 60, 2)
         # screen.blit(s, (0, 150))
+        x, y = a.x, a.y
         a.move_x()
         a.move_y()
         for coll in colliders_l:
-            if isinstance(coll, cc.circle_collider):
+            if not isinstance(coll, cc.circle_collider):
                 if coll.show:
-                    coll.draw()
-            else:
-                a.collision_handler(coll)
-                if coll.show:
-                    coll.draw()
+                    a.collision_handler(coll)
             # collision = check_collision(a, coll)
             # while collision:
             #     collision = check_collision(a, coll)
             #     collision_handler(a, coll, collision)
         compruebaTeclasMover(keys, a)
-        a.draw()
-    pygame.display.flip() ##Actualiza la pantalla
+    
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -139,6 +139,20 @@ while True:
                     if coll.clicked:
                         pos = pygame.mouse.get_pos()
                         coll.move(pos[0], pos[1])
+    t_final = time.time()
+    t = t + t_final - t_inicial
+    t1 = t1 + t_final - t_inicial
+    if t >= 1 / 60:
+        i+=1
+        # if i % 60 == 0:
+            # print(i, "imgs: ", int(t1), "s", sep = "")
+        screen.fill(0) ##Limpia la pantalla
+        titl = "pygame_test | fps: {0:.2f}".format(i / t1)
+        pygame.display.set_caption(titl)
+        for dr in drawble:
+            dr.draw()
+        pygame.display.flip() ##Actualiza la pantalla
+        t = 0
 
 
     
